@@ -6,9 +6,10 @@ var named = require('vinyl-named'); // needed for gulp-webpack
 var uglify = require('gulp-uglify');
 var path = require('path');
 var sourcemaps = require('gulp-sourcemaps');
+var raw = require('raw');
 
 gulp.task('js', function () {
-    return gulp.src(['./src/app/module.config.js'], { base: './' })
+    return gulp.src(['./src/app/app.config.js'], { base: './' })
         .pipe(named())
         .pipe(webpack({
             output: {
@@ -25,15 +26,16 @@ gulp.task('js', function () {
                 {
                     test: /\.js$/,
                     exclude: /node_modules/,
-                    loader:  'babel?presets[]=es2015',
+                    loader: 'babel?presets[]=es2015',
                     query: {
                         presets: ['es2015']
                     }
                 },
-                {
-                    test: /\.html$/,
-                    loader: "ng-cache?prefix=[dir]/[dir]"
-                }
+                // {
+                //     test: /\.html$/,
+                //     loader: "ng-cache?prefix=[dir]/[dir]"
+                // },
+                { test: /\.html$/, loader: "html" }
             ]
         }))
         .pipe(rename({
