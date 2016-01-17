@@ -6,8 +6,8 @@ var named = require('vinyl-named'); // needed for gulp-webpack
 var uglify = require('gulp-uglify');
 var path = require('path');
 
-gulp.task('js', function(){
-     return gulp.src(['src/app/module.config.js'], { base: './' })
+gulp.task('js', function () {
+    return gulp.src(['src/app/module.config.js'], { base: './' })
         .pipe(named())
         .pipe(webpack({
             output: {
@@ -34,8 +34,14 @@ gulp.task('js', function(){
         .pipe(gulp.dest('./'));
 });
 
-gulp.watch('watch', function(){
+gulp.task('html', function () {
+    return gulp.src(['./src/**/*.html'], { base: './src/app' })
+        .pipe(gulp.dest('./dist/app'));
+});
+
+gulp.task('watch', function () {
     gulp.watch('src/app/**/*.js', ['js']);
+    gulp.watch('src/**/*.html', ['html']);
 });
 
 function isRelease() {
