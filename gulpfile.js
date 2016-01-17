@@ -5,9 +5,10 @@ var rename = require('gulp-rename'); // rename files or directories in streams
 var named = require('vinyl-named'); // needed for gulp-webpack
 var uglify = require('gulp-uglify');
 var path = require('path');
+var sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('js', function () {
-    return gulp.src(['src/app/module.config.js'], { base: './' })
+    return gulp.src(['./src/app/module.config.js'], { base: './' })
         .pipe(named())
         .pipe(webpack({
             output: {
@@ -21,6 +22,14 @@ gulp.task('js', function () {
             devtool: (isRelease()) ? '#source-map' : '#inline-source-map',
             plugins: (isRelease()) ? [uglify] : [],
             loaders: [
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader:  'babel?presets[]=es2015',
+                    query: {
+                        presets: ['es2015']
+                    }
+                },
                 {
                     test: /\.html$/,
                     loader: "ng-cache?prefix=[dir]/[dir]"
@@ -38,6 +47,8 @@ gulp.task('html', function () {
     return gulp.src(['./src/**/*.html'], { base: './src/app' })
         .pipe(gulp.dest('./dist/app'));
 });
+
+gulp.task('build', ['js', 'html']);
 
 gulp.task('watch', function () {
     gulp.watch('src/app/**/*.js', ['js']);
